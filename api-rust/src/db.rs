@@ -4,6 +4,7 @@ use r2d2::{ Pool, PooledConnection };
 use r2d2_diesel::ConnectionManager;
 use diesel::pg::PgConnection;
 use rocket::http::Status;
+use std::ops::Deref;
 
 pub type PgPool = Pool<ConnectionManager<PgConnection>>;
 
@@ -23,5 +24,14 @@ impl<'a, 'r> FromRequest<'a, 'r> for Conn {
       Ok(conn) => Outcome::Success(Conn(conn)),
       Err(_) => Outcome::Failure((Status::ServiceUnavailable, ())),
     }
+  }
+}
+
+impl Deref for Conn {
+  type Target = PgConnection;
+
+  #[inline(always)]
+  fn deref(&self) -> &Self::Target {
+    &self.0
   }
 }
