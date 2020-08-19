@@ -26,7 +26,9 @@ fn rocket() -> rocket::Rocket {
     .manage(pool)
     .mount(
       "/api/v1/",
-      routes![],
+      routes![
+        routes::get_users,
+      ],
     )
 }
 
